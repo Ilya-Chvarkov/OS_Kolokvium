@@ -4,11 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build-and-test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]  # Добавьте macos-latest, windows-latest при необходимости
-        cpp: [17]            # Матрица стандартов C++
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -17,38 +13,29 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++ libgtest-dev
-        cd /usr/src/gtest
-        sudo cmake .
-        sudo make
-        sudo cp *.a /usr/lib
+        sudo apt-get install -y cmake g++
 
-    - name: Cache GTest
-      uses: actions/cache@v3
-      with:
-        path: /usr/local/lib/googletest
-        key: ${{ runner.os }}-gtest
-
+    # Используем FetchContent из CMake вместо системного GTest
     - name: Build and Test Factorials
       working-directory: ./factorials-container
       run: |
         mkdir -p build && cd build
-        cmake -DCMAKE_CXX_STANDARD=${{ matrix.cpp }} ..
+        cmake ..
         make
-        ./FactorialsTest
+        ./FactorialsTest || exit 1
 
     - name: Build and Test RemoveDuplicates
       working-directory: ./remove-duplicates
       run: |
         mkdir -p build && cd build
-        cmake -DCMAKE_CXX_STANDARD=${{ matrix.cpp }} ..
+        cmake ..
         make
-        ./DuplicatesRemoverTest
+        ./DuplicatesRemoverTest || exit 1
 
     - name: Build and Test ReverseLinkedList
       working-directory: ./reverse-linked-list
       run: |
         mkdir -p build && cd build
-        cmake -DCMAKE_CXX_STANDARD=${{ matrix.cpp }} ..
+        cmake ..
         make
-        ./LinkedListTest
+        ./LinkedListTest || exit 1
