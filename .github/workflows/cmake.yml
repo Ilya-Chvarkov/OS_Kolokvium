@@ -15,27 +15,38 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cmake g++
 
-    # Используем FetchContent из CMake вместо системного GTest
-    - name: Build and Test Factorials
+    # Собираем и тестируем factorials-container
+    - name: Build Factorials
       working-directory: ./factorials-container
       run: |
         mkdir -p build && cd build
-        cmake ..
+        cmake -DCMAKE_CXX_STANDARD=17 ..
         make
-        ./FactorialsTest || exit 1
 
-    - name: Build and Test RemoveDuplicates
+    - name: Test Factorials
+      working-directory: ./factorials-container/build
+      run: ./FactorialsTest
+
+    # Собираем и тестируем remove-duplicates
+    - name: Build RemoveDuplicates
       working-directory: ./remove-duplicates
       run: |
         mkdir -p build && cd build
-        cmake ..
+        cmake -DCMAKE_CXX_STANDARD=17 ..
         make
-        ./DuplicatesRemoverTest || exit 1
 
-    - name: Build and Test ReverseLinkedList
+    - name: Test RemoveDuplicates
+      working-directory: ./remove-duplicates/build
+      run: ./DuplicatesRemoverTest
+
+    # Собираем и тестируем reverse-linked-list
+    - name: Build ReverseLinkedList
       working-directory: ./reverse-linked-list
       run: |
         mkdir -p build && cd build
-        cmake ..
+        cmake -DCMAKE_CXX_STANDARD=17 ..
         make
-        ./LinkedListTest || exit 1
+
+    - name: Test ReverseLinkedList
+      working-directory: ./reverse-linked-list/build
+      run: ./LinkedListTest
