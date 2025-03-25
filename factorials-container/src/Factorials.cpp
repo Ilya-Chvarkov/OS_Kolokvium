@@ -1,4 +1,4 @@
-#include "Factorials.h"
+#include "../include/Factorials.h"
 #include <vector>
 #include <stdexcept>
 
